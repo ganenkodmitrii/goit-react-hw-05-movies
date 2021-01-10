@@ -1,0 +1,19 @@
+.link {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px;
+    font-weight: 500;
+    color: #c8cccf;
+    font-size: 18px;
+}
+
+.activeLink {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px;
+    font-weight: 500;
+    /* Найти расширение
+    composes: link; */
+    color: #cf4711;
+    font-size: 18px;
+}

@@ -1,0 +1,9 @@
+.moviesList {
+    /* display: inline-block; */
+    /* text-decoration: none; */
+    /* padding: 12px; */
+    font-weight: 500;
+    color: #c8cccf;
+    font-size: 18px;
+    list-style: none;
+}
