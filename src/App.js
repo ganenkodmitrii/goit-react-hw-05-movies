@@ -1,12 +1,12 @@
 import { Switch, Route } from 'react-router-dom';
+import Container from './components/Container';
+import AppBar from './components/AppBar';
+import { ToastContainer } from 'react-toastify';
+import './App.css';
 import HomePage from './views/HomePage/HomePage';
 import MoviesPage from './views/MoviesPage/MoviesPage';
 import MovieDetailsPage from './views/MovieDetailsPage/MovieDetailsPage';
 import NotFoundView from './views/NotFoundView';
-import { ToastContainer } from 'react-toastify';
-import './App.css';
-import Container from './components/Container';
-import AppBar from './components/AppBar';
 
 export default function App() {
     return (
@@ -22,7 +22,7 @@ export default function App() {
                     <MoviesPage />
                 </Route>
 
-                <Route path="/movies:/movieId">
+                <Route path="/movies/:movieId">
                     <MovieDetailsPage />
                 </Route>
 
