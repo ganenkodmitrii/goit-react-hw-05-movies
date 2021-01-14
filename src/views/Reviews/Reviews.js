@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
-import { fetchTrendingsMovies } from '../../services/moviesAPI';
+import { getMovieReviews } from '../../services/moviesAPI';
+import { useParams } from 'react-router-dom';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
-import { Link, useRouteMatch } from 'react-router-dom';
-import s from './HomePage.module.css';
 
-export default function HomePage() {
-    const { url } = useRouteMatch();
-    const [movies, setMovies] = useState([]);
+export default function Cast() {
+    const { movieId } = useParams();
+    const [reviews, setReviews] = useState(null);
     const [error, setError] = useState(null);
     const [status, setStatus] = useState(Status.IDLE);
 
     useEffect(() => {
-        setStatus(Status.PENDING);
-        fetchTrendingsMovies()
+        getMovieReviews(movieId)
             .then(({ results }) => {
-                setMovies(results);
+                setReviews(results);
                 setStatus(Status.RESOLVED);
             })
             .catch(error => {
@@ -24,26 +22,20 @@ export default function HomePage() {
                 setError('Что-то пошло не так. Зайдите позже.');
                 setStatus(Status.REJECTED);
             });
-    }, []);
+    }, [movieId]);
+
     return (
         <>
-            <h1>Trending today</h1>
-
             {status === Status.PENDING && <Loading />}
-
             {status === Status.REJECTED && (
                 <ErrorView message={error.message} />
             )}
             {status === Status.RESOLVED && (
-                <ul className={s.moviesList}>
-                    {movies.map(movie => (
-                        <li className={s.moviesItem} key={movie.id}>
-                            <Link
-                                className={s.moviesLink}
-                                to={`${url}movies/${movie.id}`}
-                            >
-                                <p className={s.title}>{movie.title}</p>
-                            </Link>
+                <ul>
+                    {reviews.map(review => (
+                        <li key={review.id}>
+                            <h4>Author: {review.author}</h4>
+                            <p>{review.content}</p>
                         </li>
                     ))}
                 </ul>

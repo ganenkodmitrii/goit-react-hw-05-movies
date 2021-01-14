@@ -20,7 +20,7 @@ export default function MoviePage() {
         fetchMoviesByName(query)
             .then(({ results }) => {
                 if (results.length === 0) {
-                    setError(`No results were found for ${query}!`);
+                    setError(`Ничего не найдено с таким ${query} названием!`);
                     setStatus(Status.REJECTED);
                     return;
                 }
@@ -29,7 +29,7 @@ export default function MoviePage() {
             })
             .catch(error => {
                 console.log(error);
-                setError('Something went wrong. Try again.');
+                setError('Что-то пошло не так. Зайдите позже.');
                 setStatus(Status.REJECTED);
             });
     }, [query]);
