@@ -1,0 +1,32 @@
+.contentBox {
+    margin-top: 15px;
+    display: flex;
+}
+.textBox {
+    margin-left: 10px;
+}
+.navBox {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    list-style: none;
+}
+.link {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px;
+    font-weight: 500;
+    color: #282a2b;
+    font-size: 18px;
+}
+
+.activeLink {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px;
+    font-weight: 500;
+    /* Найти расширение
+    composes: link; */
+    color: #cf4711;
+    font-size: 18px;
+}

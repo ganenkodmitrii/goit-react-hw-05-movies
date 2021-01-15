@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { fetchTrendingsMovies } from '../../services/moviesAPI';
+import { fetchTrendingsMovies, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
 import { Link, useRouteMatch } from 'react-router-dom';
+import NoFoundImage from '../../images/poster-not-found.jpg';
 import s from './HomePage.module.css';
 
 export default function HomePage() {
@@ -27,7 +28,7 @@ export default function HomePage() {
     }, []);
     return (
         <>
-            <h1>Trending today</h1>
+            <h1 style={{ textAlign: 'center' }}>Trending today</h1>
 
             {status === Status.PENDING && <Loading />}
 
@@ -42,6 +43,15 @@ export default function HomePage() {
                                 className={s.moviesLink}
                                 to={`${url}movies/${movie.id}`}
                             >
+                                <img
+                                    src={
+                                        movie.poster_path
+                                            ? `${POSTER_URL}${movie.poster_path}`
+                                            : NoFoundImage
+                                    }
+                                    alt={movie.title}
+                                    className={s.image}
+                                />
                                 <p className={s.title}>{movie.title}</p>
                             </Link>
                         </li>

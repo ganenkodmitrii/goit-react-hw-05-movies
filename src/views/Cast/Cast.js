@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { getMovieCredits } from '../../services/moviesAPI';
+import { getMovieCredits, POSTER_URL } from '../../services/moviesAPI';
 import { useParams } from 'react-router-dom';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
+import NoFoundImage from '../../images/not-found.jpg';
+import s from './Cast.module.css';
 
 export default function Cast() {
     const { movieId } = useParams();
@@ -32,22 +34,22 @@ export default function Cast() {
                 <ErrorView message={error.message} />
             )}
             {status === Status.RESOLVED && (
-                <ul
-                    style={{
-                        marginTop: '15px',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                    }}
-                >
+                <ul className={s.castList}>
                     {actors.map(actor => (
-                        <li key={actor.id}>
+                        <li key={actor.id} className={s.castItem}>
                             <img
-                                src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+                                src={
+                                    actor.profile_path
+                                        ? `${POSTER_URL}${actor.profile_path}`
+                                        : NoFoundImage
+                                }
                                 alt={actor.original_name}
-                                width="100"
+                                className={s.image}
                             />
-                            <h4>{actor.original_name}</h4>
-                            <p>{actor.character}</p>
+                            <h4 className={s.castName}>
+                                {actor.original_name}
+                            </h4>
+                            <p className={s.castCharacter}>{actor.character}</p>
                         </li>
                     ))}
                 </ul>

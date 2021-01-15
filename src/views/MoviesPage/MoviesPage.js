@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { fetchMoviesByName } from '../../services/moviesAPI';
+import { fetchMoviesByName, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import SearchMovie from '../../components/SearchMovie/SearchMovie';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
+import NoFoundImage from '../../images/poster-not-found.jpg';
+import s from './MoviesPage.module.css';
 
 export default function MoviePage() {
     const { url } = useRouteMatch();
@@ -48,10 +50,24 @@ export default function MoviePage() {
             {status === Status.REJECTED && <ErrorView message={error} />}
 
             {status === Status.RESOLVED && (
-                <ul>
+                <ul className={s.moviesList}>
                     {movies.map(movie => (
-                        <li key={movie.id}>
-                            <Link to={`${url}/${movie.id}`}>{movie.title}</Link>
+                        <li key={movie.id} className={s.moviesItem}>
+                            <Link
+                                to={`${url}/${movie.id}`}
+                                className={s.moviesLink}
+                            >
+                                <img
+                                    src={
+                                        movie.poster_path
+                                            ? `${POSTER_URL}${movie.poster_path}`
+                                            : NoFoundImage
+                                    }
+                                    alt={movie.title}
+                                    className={s.image}
+                                />
+                                <p className={s.title}>{movie.title}</p>
+                            </Link>
                         </li>
                     ))}
                 </ul>

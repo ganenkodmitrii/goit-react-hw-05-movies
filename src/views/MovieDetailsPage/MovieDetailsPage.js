@@ -1,11 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, NavLink, Route, useRouteMatch } from 'react-router-dom';
 import { getMovieDetails, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
-import Cast from '../Cast/Cast';
-import Reviews from '../Reviews/Reviews';
+import s from './MovieDetailsPage.module.css';
+
+const Cast = lazy(() =>
+    import('../Cast/Cast' /* webpackChunkName: "cast-subview"*/),
+);
+
+const Reviews = lazy(() =>
+    import('../Reviews/Reviews' /* webpackChunkName: "reviews-subview"*/),
+);
 
 export default function MovieDetailsPage() {
     const { movieId } = useParams();
@@ -50,7 +57,7 @@ export default function MovieDetailsPage() {
 
             {status === Status.RESOLVED && (
                 <>
-                    <div style={{ marginTop: '15px', display: 'flex' }}>
+                    <div className={s.contentBox}>
                         <div>
                             <img
                                 src={movie.src}
@@ -58,7 +65,7 @@ export default function MovieDetailsPage() {
                                 width="200"
                             />
                         </div>
-                        <div style={{ marginLeft: '10px' }}>
+                        <div className={s.textBox}>
                             <h2>{movie.title}</h2>
                             <p>User Score: {movie.score} %</p>
                             <h3>Overview</h3>
@@ -72,20 +79,34 @@ export default function MovieDetailsPage() {
                         </div>
                     </div>
                     <div>
-                        <ul>
+                        <ul className={s.navBox}>
                             <li>
-                                <NavLink to={`${url}/cast`}>Cast</NavLink>
+                                <NavLink
+                                    to={`${url}/cast`}
+                                    className={s.link}
+                                    activeClassName={s.activeLink}
+                                >
+                                    Cast
+                                </NavLink>
                             </li>
                             <li>
-                                <NavLink to={`${url}/reviews`}>Reviews</NavLink>
+                                <NavLink
+                                    to={`${url}/reviews`}
+                                    className={s.link}
+                                    activeClassName={s.activeLink}
+                                >
+                                    Reviews
+                                </NavLink>
                             </li>
                         </ul>
-                        <Route path={`${path}/cast`}>
-                            {status === Status.RESOLVED && <Cast />}
-                        </Route>
-                        <Route path={`${path}/reviews`}>
-                            {status === Status.RESOLVED && <Reviews />}
-                        </Route>
+                        <Suspense fallback={<Loading />}>
+                            <Route path={`${path}/cast`}>
+                                {status === Status.RESOLVED && <Cast />}
+                            </Route>
+                            <Route path={`${path}/reviews`}>
+                                {status === Status.RESOLVED && <Reviews />}
+                            </Route>
+                        </Suspense>
                     </div>
                 </>
             )}
