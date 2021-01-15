@@ -1,5 +1,12 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { useParams, NavLink, Route, useRouteMatch } from 'react-router-dom';
+import {
+    useParams,
+    NavLink,
+    Route,
+    useRouteMatch,
+    useHistory,
+    useLocation,
+} from 'react-router-dom';
 import { getMovieDetails, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
@@ -15,6 +22,8 @@ const Reviews = lazy(() =>
 );
 
 export default function MovieDetailsPage() {
+    const history = useHistory();
+    const location = useLocation();
     const { movieId } = useParams();
     const { url, path } = useRouteMatch();
     const [movie, setMovie] = useState(null);
@@ -49,8 +58,19 @@ export default function MovieDetailsPage() {
             });
     }, [movieId]);
 
+    const handleGoBack = () => {
+        if (!location.state) {
+            history.push('/');
+            return;
+        }
+        history.push({ ...location.state.from });
+    };
+
     return (
         <>
+            <button onClick={handleGoBack} type="button" className={s.button}>
+                Go back
+            </button>
             {status === Status.PENDING && <Loading />}
 
             {status === Status.REJECTED && <ErrorView message={error} />}
@@ -82,7 +102,14 @@ export default function MovieDetailsPage() {
                         <ul className={s.navBox}>
                             <li>
                                 <NavLink
-                                    to={`${url}/cast`}
+                                    to={{
+                                        pathname: `${url}/cast`,
+                                        state: {
+                                            from: location.state
+                                                ? location.state.from
+                                                : '/',
+                                        },
+                                    }}
                                     className={s.link}
                                     activeClassName={s.activeLink}
                                 >
@@ -91,7 +118,14 @@ export default function MovieDetailsPage() {
                             </li>
                             <li>
                                 <NavLink
-                                    to={`${url}/reviews`}
+                                    to={{
+                                        pathname: `${url}/reviews`,
+                                        state: {
+                                            from: location.state
+                                                ? location.state.from
+                                                : '/',
+                                        },
+                                    }}
                                     className={s.link}
                                     activeClassName={s.activeLink}
                                 >
@@ -99,6 +133,7 @@ export default function MovieDetailsPage() {
                                 </NavLink>
                             </li>
                         </ul>
+
                         <Suspense fallback={<Loading />}>
                             <Route path={`${path}/cast`}>
                                 {status === Status.RESOLVED && <Cast />}

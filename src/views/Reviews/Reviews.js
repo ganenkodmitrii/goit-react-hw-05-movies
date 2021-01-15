@@ -30,7 +30,7 @@ export default function Cast() {
             {status === Status.REJECTED && (
                 <ErrorView message={error.message} />
             )}
-            {status === Status.RESOLVED && (
+            {status === Status.RESOLVED && reviews.length !== 0 ? (
                 <ul>
                     {reviews.map(review => (
                         <li key={review.id}>
@@ -39,6 +39,8 @@ export default function Cast() {
                         </li>
                     ))}
                 </ul>
+            ) : (
+                <p>We don't have any reviews for this movies</p>
             )}
         </>
     );

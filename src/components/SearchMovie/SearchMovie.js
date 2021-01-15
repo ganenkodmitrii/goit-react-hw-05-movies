@@ -19,7 +19,7 @@ export default function SearchMovie({ formSubmitHandler }) {
             return toast.info('Ничего не ввели в поиск! :(');
         }
 
-        formSubmitHandler(search);
+        formSubmitHandler(search.trim());
         reset();
     };
 

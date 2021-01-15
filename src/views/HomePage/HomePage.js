@@ -3,11 +3,12 @@ import { fetchTrendingsMovies, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import Loading from '../../components/Loading/Loading';
 import ErrorView from '../../components/ErrorView/ErrorView';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useRouteMatch, useLocation } from 'react-router-dom';
 import NoFoundImage from '../../images/poster-not-found.jpg';
 import s from './HomePage.module.css';
 
 export default function HomePage() {
+    const location = useLocation();
     const { url } = useRouteMatch();
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
@@ -41,7 +42,10 @@ export default function HomePage() {
                         <li className={s.moviesItem} key={movie.id}>
                             <Link
                                 className={s.moviesLink}
-                                to={`${url}movies/${movie.id}`}
+                                to={{
+                                    pathname: `${url}movies/${movie.id}`,
+                                    state: { from: location },
+                                }}
                             >
                                 <img
                                     src={

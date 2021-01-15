@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import { fetchMoviesByName, POSTER_URL } from '../../services/moviesAPI';
 import Status from '../../services/status';
 import SearchMovie from '../../components/SearchMovie/SearchMovie';
@@ -10,11 +10,21 @@ import s from './MoviesPage.module.css';
 
 export default function MoviePage() {
     const { url } = useRouteMatch();
-
+    const history = useHistory();
+    const location = useLocation();
     const [query, setQuery] = useState('');
     const [movies, setMovies] = useState(null);
     const [error, setError] = useState(null);
     const [status, setStatus] = useState(Status.IDLE);
+
+    useEffect(() => {
+        if (location.search === '') {
+            return;
+        }
+
+        const newSearch = new URLSearchParams(location.search).get('query');
+        setQuery(newSearch);
+    }, [location.search]);
 
     useEffect(() => {
         if (!query) return;
@@ -37,10 +47,12 @@ export default function MoviePage() {
     }, [query]);
 
     const handleFormSubmit = newSearch => {
+        if (query === newSearch) return;
         setQuery(newSearch);
         setMovies(null);
         setError(null);
         setStatus(Status.IDLE);
+        history.push({ ...location, search: `query=${newSearch}` });
     };
 
     return (
@@ -54,7 +66,10 @@ export default function MoviePage() {
                     {movies.map(movie => (
                         <li key={movie.id} className={s.moviesItem}>
                             <Link
-                                to={`${url}/${movie.id}`}
+                                to={{
+                                    pathname: `${url}/${movie.id}`,
+                                    state: { from: location },
+                                }}
                                 className={s.moviesLink}
                             >
                                 <img
